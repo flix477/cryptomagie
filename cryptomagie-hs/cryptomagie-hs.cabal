@@ -1,0 +1,93 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c5f45db0d2622700a975b72b92670d271c6b4f05ff8e935c5cc38edcf4019289
+
+name:           cryptomagie-hs
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/cryptomagie-hs#readme>
+homepage:       https://github.com/githubuser/cryptomagie-hs#readme
+bug-reports:    https://github.com/githubuser/cryptomagie-hs/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/cryptomagie-hs
+
+library
+  exposed-modules:
+      Base64
+      Lib
+  other-modules:
+      Paths_cryptomagie_hs
+  hs-source-dirs:
+      src
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , split
+    , text
+  default-language: Haskell2010
+
+executable cryptomagie-hs-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_cryptomagie_hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , cryptomagie-hs
+    , split
+    , text
+  default-language: Haskell2010
+
+test-suite cryptomagie-hs-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_cryptomagie_hs
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , cryptomagie-hs
+    , split
+    , text
+  default-language: Haskell2010
+
+benchmark cryptomagie-hs-bench
+  type: exitcode-stdio-1.0
+  main-is: Bench.hs
+  other-modules:
+      Paths_cryptomagie_hs
+  hs-source-dirs:
+      bench
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , criterion
+    , cryptomagie-hs
+    , split
+    , text
+  default-language: Haskell2010
