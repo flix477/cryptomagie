@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c5f45db0d2622700a975b72b92670d271c6b4f05ff8e935c5cc38edcf4019289
+-- hash: d4163ab9a9f69f9a5faf340e9c3340f0115d2c98a9876f7bc06952feec5cae6a
 
 name:           cryptomagie-hs
 version:        0.1.0.0
@@ -27,7 +27,8 @@ source-repository head
 
 library
   exposed-modules:
-      Base64
+      Encoding.Base64
+      Encoding.Hex
       Lib
   other-modules:
       Paths_cryptomagie_hs
@@ -70,6 +71,7 @@ test-suite cryptomagie-hs-test
     , base >=4.7 && <5
     , bytestring
     , cryptomagie-hs
+    , hspec
     , split
     , text
   default-language: Haskell2010

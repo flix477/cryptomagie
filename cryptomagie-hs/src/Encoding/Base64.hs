@@ -1,4 +1,4 @@
-module Base64
+module Encoding.Base64
   ( encode
   ) where
 

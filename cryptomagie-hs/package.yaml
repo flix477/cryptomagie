@@ -50,6 +50,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - cryptomagie-hs
+    - hspec
 
 benchmarks:
   cryptomagie-hs-bench:
