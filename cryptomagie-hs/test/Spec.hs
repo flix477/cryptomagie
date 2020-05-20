@@ -5,7 +5,7 @@ import Test.Hspec
 
 import qualified Encoding.Base64 as Base64 (encode)
 import qualified Encoding.Hex as Hex (decode, encode)
-import qualified Encoding.XOR as XOR (encode)
+import qualified Encryption.XOR as XOR (encrypt)
 
 main :: IO ()
 main = hspec $ do
@@ -21,5 +21,5 @@ main = hspec $ do
         let input = Hex.decode "1c0111001f010100061a024b53535009181c"
         let key = Hex.decode "686974207468652062756c6c277320657965"
         let expected = "746865206b696420646f6e277420706c6179"
-        let output = Hex.encode $ XOR.encode input key
+        let output = Hex.encode $ XOR.encrypt input key
         output `shouldBe` expected
