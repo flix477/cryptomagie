@@ -50,7 +50,6 @@ encodeChunk xs
 
 encode :: ByteString -> String
 encode
-  = concat
-  . map encodeChunk
+  = concatMap encodeChunk
   . chunksOf 3
   . unpack

@@ -3,6 +3,7 @@ import Data.Text.Encoding (encodeUtf8)
 import Data.Foldable (for_)
 import Test.Hspec
 
+import qualified Analysis (findBestSingleByteXOR)
 import qualified Encoding.Base64 as Base64 (encode)
 import qualified Encoding.Hex as Hex (decode, encode)
 import qualified Encryption.XOR as XOR (encrypt)
@@ -23,3 +24,10 @@ main = hspec $ do
         let expected = "746865206b696420646f6e277420706c6179"
         let output = Hex.encode $ XOR.encrypt input key
         output `shouldBe` expected
+    describe "Challenge 3" $ do
+      it "should return the right XOR key and message" $ do
+        let input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+        let expectedKey = 88
+        let expectedMsg =  "Cooking MC's like a pound of bacon"
+        let output = Analysis.findBestSingleByteXOR $ Hex.decode input
+        output `shouldBe` (expectedKey, encodeUtf8 $ pack expectedMsg)

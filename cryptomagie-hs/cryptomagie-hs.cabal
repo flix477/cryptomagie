@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8c5c36caa566bfadd6ecccfd4d0d4884978d48937a9e631a2ce7a96203f69bc0
+-- hash: 492c437c2ac44b0c2673bf0d950e31b7a88056bb695f5813881b6300aaef7cc5
 
 name:           cryptomagie-hs
 version:        0.1.0.0
@@ -41,7 +41,6 @@ library
     , base >=4.7 && <5
     , bytestring
     , containers
-    , heap
     , split
     , text
   default-language: Haskell2010
@@ -59,7 +58,6 @@ executable cryptomagie-hs-exe
     , bytestring
     , containers
     , cryptomagie-hs
-    , heap
     , split
     , text
   default-language: Haskell2010
@@ -78,7 +76,6 @@ test-suite cryptomagie-hs-test
     , bytestring
     , containers
     , cryptomagie-hs
-    , heap
     , hspec
     , split
     , text
@@ -99,7 +96,6 @@ benchmark cryptomagie-hs-bench
     , containers
     , criterion
     , cryptomagie-hs
-    , heap
     , split
     , text
   default-language: Haskell2010

@@ -26,7 +26,6 @@ dependencies:
 - bytestring
 - text
 - containers
-- heap
 
 library:
   source-dirs: src
