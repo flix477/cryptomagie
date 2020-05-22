@@ -2,9 +2,8 @@ module Encoding.Base64
   ( encode
   ) where
 
-import Data.Bits ((.&.), (.|.), shiftL, shiftR, testBit)
-import Data.ByteString (ByteString, unpack, pack)
-import Data.Char (chr)
+import Data.Bits ((.&.), (.|.), shiftL, shiftR)
+import Data.ByteString (ByteString, unpack)
 import Data.Array.IArray (Array, listArray, (!))
 import Data.Word (Word8)
 import Data.List.Split (chunksOf)

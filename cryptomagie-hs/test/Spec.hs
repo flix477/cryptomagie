@@ -1,9 +1,10 @@
+import qualified Data.ByteString.Char8 as BT (putStrLn)
 import Data.Text (pack, unpack)
 import Data.Text.Encoding (encodeUtf8)
 import Data.Foldable (for_)
 import Test.Hspec
 
-import qualified Analysis (findBestSingleByteXOR)
+import qualified Analysis (findBestSingleByteXOR, findBestSingleByteXOR')
 import qualified Encoding.Base64 as Base64 (encode)
 import qualified Encoding.Hex as Hex (decode, encode)
 import qualified Encryption.XOR as XOR (encrypt)
@@ -29,5 +30,14 @@ main = hspec $ do
         let input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
         let expectedKey = 88
         let expectedMsg =  "Cooking MC's like a pound of bacon"
-        let output = Analysis.findBestSingleByteXOR $ Hex.decode input
-        output `shouldBe` (expectedKey, encodeUtf8 $ pack expectedMsg)
+        let Just (key, msg, _) = Analysis.findBestSingleByteXOR $ Hex.decode input
+        key `shouldBe` expectedKey
+        msg `shouldBe` (encodeUtf8 $ pack expectedMsg)
+    describe "Challenge 4" $ do
+      it "should find the correct single byte XOR'd line" $ do
+        f <- readFile "./test/challenge4.txt"
+        let Just (key, msg, _) = Analysis.findBestSingleByteXOR' $ map Hex.decode $ lines f
+        let expectedKey = 53
+        let expectedMsg = "Now that the party is jumping\n"
+        key `shouldBe` expectedKey
+        msg `shouldBe` (encodeUtf8 $ pack expectedMsg)

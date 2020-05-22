@@ -3,12 +3,11 @@ module Encoding.Hex (encode, decode) where
 import Data.Array.IArray (Array, listArray, (!), assocs)
 import Data.Bits ((.&.), (.|.), shiftR, shiftL)
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as BT (pack, unpack, empty)
+import qualified Data.ByteString as BT (pack, unpack)
 import Data.Foldable (find)
-import Data.List.NonEmpty (NonEmpty(..), nonEmpty, toList)
+import Data.List.NonEmpty (NonEmpty(..), nonEmpty)
 import Data.Maybe (fromJust)
 import Data.List.Split (chunksOf)
-import Data.Tuple (fst)
 import Data.Word (Word8)
 
 charTable :: Array Word8 Char
@@ -37,7 +36,7 @@ decodeNibble :: Char -> Word8
 decodeNibble c
   = fst
   $ fromJust
-  $ find (\(i, x) -> x == c)
+  $ find (\(_, x) -> x == c)
   $ assocs charTable
 
 decodeByte :: NonEmpty Char -> Word8
