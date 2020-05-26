@@ -1,27 +1,15 @@
-module Analysis (distanceFromEnglish, byteFrequencyMap, findBestSingleByteXOR, findBestSingleByteXOR', singleByteXORPossibilities, getEnglishFrequency) where
+module Analysis.Frequency (distanceFromEnglish) where
 
 import Data.Array.IArray (Array, listArray, (!))
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BT (unpack, length)
-import Data.Function (on)
-import Data.List (minimumBy)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M (insertWith, empty, toList)
-import Data.Maybe (mapMaybe)
 import Data.Word (Word8)
-
-import qualified Encryption.XOR as XOR (encrypt')
 
 -- 🦀 readability is gone 🦀
 (<?) :: Ord a => a -> (a, a) -> Bool
 (<?) a (l, u) = l <= a && a <= u
-
-trd :: (a,b,c) -> c
-trd (_,_,x) = x
-
-maybeList :: [a] -> Maybe [a]
-maybeList [] = Nothing
-maybeList xs = Just xs
 
 isSpace :: Word8 -> Bool
 isSpace c = c == 0x9 || c == 0xA
@@ -47,12 +35,6 @@ byteFrequencyMap xs
   where inc = 1.0 / (fromIntegral $ BT.length xs)
         update = (\previous _ -> previous + inc)
 
-singleByteXORPossibilities :: ByteString -> [(Word8, ByteString)]
-singleByteXORPossibilities
-  = zipWith enc [0..0xFF]
-  . repeat
-  where enc = (\i b -> (i, XOR.encrypt' i b))
-
 getEnglishFrequency :: Word8 -> Maybe Float
 getEnglishFrequency c
   | c <? (0x41, 0x5A) = f $ c - 0x41
@@ -68,17 +50,3 @@ distanceFromEnglish
   . M.toList
   . byteFrequencyMap
   where freqDistance (c, freq) = distance freq <$> getEnglishFrequency c
-
--- TODO: switch out that tuple for a custom data type
-findBestSingleByteXOR :: ByteString -> Maybe (Word8, ByteString, Float)
-findBestSingleByteXOR
-  = fmap (minimumBy (compare `on` trd))
-  . maybeList
-  . mapMaybe (\(a, b) -> (,,) a b <$> distanceFromEnglish b)
-  . singleByteXORPossibilities
-
-findBestSingleByteXOR' :: [ByteString] -> Maybe (Word8, ByteString, Float)
-findBestSingleByteXOR'
-  = fmap (minimumBy (compare `on` trd))
-  . maybeList
-  . mapMaybe findBestSingleByteXOR

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 492c437c2ac44b0c2673bf0d950e31b7a88056bb695f5813881b6300aaef7cc5
+-- hash: 2d18a61ccce1dc9b916858d92b5ad078c6bb407f5d23d393b3cf45ea81d64ec9
 
 name:           cryptomagie-hs
 version:        0.1.0.0
@@ -27,7 +27,9 @@ source-repository head
 
 library
   exposed-modules:
-      Analysis
+      Analysis.Distance
+      Analysis.Frequency
+      Analysis.XOR
       Encoding.Base64
       Encoding.Hex
       Encryption.XOR
@@ -45,27 +47,13 @@ library
     , text
   default-language: Haskell2010
 
-executable cryptomagie-hs-exe
-  main-is: Main.hs
-  other-modules:
-      Paths_cryptomagie_hs
-  hs-source-dirs:
-      app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      array
-    , base >=4.7 && <5
-    , bytestring
-    , containers
-    , cryptomagie-hs
-    , split
-    , text
-  default-language: Haskell2010
-
 test-suite cryptomagie-hs-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Analysis.DistanceSpec
+      Cryptopals.Set1Spec
+      Util
       Paths_cryptomagie_hs
   hs-source-dirs:
       test
