@@ -1,18 +1,18 @@
-module Analysis.Frequency (distanceFromEnglish) where
+module Analysis.Frequency.Monogram (distanceFromEnglish) where
 
 import Data.Array.IArray (Array, listArray, (!))
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BT (unpack, length)
 import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as M (insertWith, empty, toList)
+import qualified Data.Map.Strict as M (insertWith, empty, fromList, toList, findWithDefault)
 import Data.Word (Word8)
 
--- 🦀 readability is gone 🦀
-(<?) :: Ord a => a -> (a, a) -> Bool
-(<?) a (l, u) = l <= a && a <= u
-
-isSpace :: Word8 -> Bool
-isSpace c = c == 0x9 || c == 0xA
+import Util
+  ( isWhitespace
+  , isPrintable
+  , isLowercase
+  , isUppercase
+  )
 
 distance :: Num a => a -> a -> a
 distance a = abs . (-) a
@@ -20,12 +20,12 @@ distance a = abs . (-) a
 -- ideally we'd have a full printableAsciiFrequencyMap
 englishFrequencyMap :: Array Word8 Float
 englishFrequencyMap = listArray (0, 26)
-  [ 0.08167, 0.01492, 0.02782, 0.04253, 0.12702
-  , 0.02228, 0.02015, 0.06094, 0.06966, 0.00153
-  , 0.00772, 0.04025, 0.02406, 0.06749, 0.07507
-  , 0.01929, 0.00095, 0.05987, 0.06327, 0.09056
-  , 0.02758, 0.00978, 0.02360, 0.00150, 0.01974
-  , 0.00074
+  [ 0.0855, 0.0160, 0.0316, 0.0387, 0.1210
+  , 0.0218, 0.0209, 0.0496, 0.0733, 0.0022
+  , 0.0081, 0.0421, 0.0253, 0.0717, 0.0747
+  , 0.0207, 0.0010, 0.0633, 0.0673, 0.0894
+  , 0.0268, 0.0106, 0.0183, 0.0019, 0.0172
+  , 0.0011
   ]
 
 byteFrequencyMap :: ByteString -> Map Word8 Float
@@ -37,9 +37,9 @@ byteFrequencyMap xs
 
 getEnglishFrequency :: Word8 -> Maybe Float
 getEnglishFrequency c
-  | c <? (0x41, 0x5A) = f $ c - 0x41
-  | c <? (0x61, 0x7A) = f $ c - 0x61
-  | isSpace c || c <? (0x20, 0x7E) = Just 0
+  | isUppercase c = f $ c - 0x41
+  | isLowercase c = f $ c - 0x61
+  | isWhitespace c || isPrintable c = Just 0
   | otherwise = Nothing
   where f = Just . (!) englishFrequencyMap
 

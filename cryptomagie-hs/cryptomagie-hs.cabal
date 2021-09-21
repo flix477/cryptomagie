@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2d18a61ccce1dc9b916858d92b5ad078c6bb407f5d23d393b3cf45ea81d64ec9
+-- hash: 32f86508ab1cf1a8a03ecf36798923f1bbdf4b714df81f33e52f28fcf2b5d3e2
 
 name:           cryptomagie-hs
 version:        0.1.0.0
@@ -28,12 +28,14 @@ source-repository head
 library
   exposed-modules:
       Analysis.Distance
-      Analysis.Frequency
+      Analysis.Frequency.Bigram
+      Analysis.Frequency.Monogram
       Analysis.XOR
       Encoding.Base64
       Encoding.Hex
       Encryption.XOR
       Lib
+      Util
   other-modules:
       Paths_cryptomagie_hs
   hs-source-dirs:

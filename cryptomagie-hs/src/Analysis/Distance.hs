@@ -17,4 +17,6 @@ hammingDistance a
 normalizedHammingDistance :: ByteString -> ByteString -> Float
 normalizedHammingDistance a b = w / n
   where w = fromIntegral $ hammingDistance a b
-        n = fromIntegral $ BT.length a
+        n1 = BT.length a
+        n2 = BT.length b
+        n = fromIntegral $ min n1 n2

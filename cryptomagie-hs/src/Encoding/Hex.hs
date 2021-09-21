@@ -4,17 +4,26 @@ import Data.Array.IArray (Array, listArray, (!), assocs)
 import Data.Bits ((.&.), (.|.), shiftR, shiftL)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BT (pack, unpack)
-import Data.Foldable (find)
 import Data.List.NonEmpty (NonEmpty(..), nonEmpty)
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as M (fromList, lookup)
 import Data.Maybe (fromJust)
 import Data.List.Split (chunksOf)
 import Data.Word (Word8)
+
+import Util (flipTuple)
 
 charTable :: Array Word8 Char
 charTable = listArray (0, 15)
   [ '0', '1', '2', '3', '4', '5', '6', '7'
   , '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
   ]
+
+reverseTable :: Map Char Word8
+reverseTable
+  = M.fromList
+  . map flipTuple
+  $ assocs charTable
 
 nibbles :: Word8 -> (Word8, Word8)
 nibbles x =
@@ -33,11 +42,7 @@ encode
   . BT.unpack
 
 decodeNibble :: Char -> Word8
-decodeNibble c
-  = fst
-  $ fromJust
-  $ find (\(_, x) -> x == c)
-  $ assocs charTable
+decodeNibble c = fromJust $ M.lookup c reverseTable
 
 decodeByte :: NonEmpty Char -> Word8
 decodeByte (a:|b:_) =

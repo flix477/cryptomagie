@@ -3,31 +3,20 @@ module Analysis.XOR
   , findByteKey'
   , findRepeatingKey
   , findRepeatingKeyWithLength
-  , findKeyLengths
-  , lel
   ) where
 
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as BT (pack, splitAt, unpack, transpose)
+import qualified Data.ByteString as BT (pack, splitAt, unpack, transpose, length, take)
 import Data.List (minimumBy, sortBy)
 import Data.List.Split (chunksOf)
 import Data.Function (on)
 import Data.Maybe (mapMaybe)
 import Data.Word (Word8)
 
-import Analysis.Frequency (distanceFromEnglish)
+import Analysis.Frequency.Monogram (distanceFromEnglish)
 import Analysis.Distance (normalizedHammingDistance)
 import qualified Encryption.XOR as XOR (encrypt')
-
-fst3 :: (a,b,c) -> a
-fst3 (x,_,_) = x
-
-trd :: (a,b,c) -> c
-trd (_,_,x) = x
-
-maybeList :: [a] -> Maybe [a]
-maybeList [] = Nothing
-maybeList xs = Just xs
+import Util (maybeList, fst3, trd)
 
 bytePossibilities :: ByteString -> [(Word8, ByteString)]
 bytePossibilities
@@ -49,28 +38,22 @@ findByteKey'
   . maybeList
   . mapMaybe findByteKey
 
-lengthRange :: [Int]
-lengthRange = [2..40]
+keySampleDistance :: Int -> ByteString -> Float
+keySampleDistance n
+  = uncurry normalizedHammingDistance
+  . BT.splitAt n
+  . BT.take (n * 2)
 
-avg :: [Float] -> Float
-avg xs = (sum xs) / n
-  where n = fromIntegral $ length xs
+lengthRange :: ByteString -> [Int]
+lengthRange xs = [2..(min n 40)]
+  where n = round $ (fromIntegral $ BT.length xs) / 2
 
-lel :: Int -> ByteString -> Float
-lel n
-  = avg
-  . map (uncurry normalizedHammingDistance . BT.splitAt n . BT.pack)
-  . take 2
-  . chunksOf n
-  . BT.unpack
-
-findKeyLengths :: ByteString -> [Int]
-findKeyLengths
-  = map fst
-  . sortBy (compare `on` snd)
-  . map (\(n, xs) -> (n, lel n xs))
-  . zip lengthRange
-  . repeat
+findKeyLengths :: ByteString -> [(Int, Float)]
+findKeyLengths xs
+  = sortBy (compare `on` snd)
+  . filter (not . isNaN . snd)
+  . map (\l -> (,) l $ keySampleDistance l xs)
+  $ lengthRange xs
 
 findRepeatingKeyWithLength :: Int -> ByteString -> Maybe ByteString
 findRepeatingKeyWithLength n
@@ -85,6 +68,6 @@ findRepeatingKeyWithLength n
 findRepeatingKey :: ByteString -> [ByteString]
 findRepeatingKey xs
   = mapMaybe (uncurry findRepeatingKeyWithLength)
-  $ zip ns
+  . zip ns
   $ repeat xs
-  where ns = take 3 $ findKeyLengths xs
+  where ns = map fst $ findKeyLengths xs

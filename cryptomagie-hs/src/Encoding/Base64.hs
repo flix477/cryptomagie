@@ -3,13 +3,15 @@ module Encoding.Base64
   , decode
   ) where
 
-import Data.Array.IArray (Array, listArray, (!))
+import Data.Array.IArray (Array, listArray, (!), assocs)
 import Data.Bits ((.&.), (.|.), shiftL, shiftR)
 import Data.ByteString (ByteString, unpack, pack)
 import Data.List.Split (chunksOf)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M (fromList, lookup)
 import Data.Word (Word8)
+
+import Util (flipTuple)
 
 charTable :: Array Word8 Char
 charTable = listArray (0, 63)
@@ -57,15 +59,10 @@ encode
   . unpack
 
 reverseTable :: Map Char Word8
-reverseTable = M.fromList $ zip
-  [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
-  , 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'
-  , 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd'
-  , 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'
-  , 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x'
-  , 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7'
-  , '8', '9', '+', '/'
-  ] [0..]
+reverseTable
+  = M.fromList
+  . map flipTuple
+  $ assocs charTable
 
 decodeChar :: Char -> Maybe Word8
 decodeChar c = M.lookup c reverseTable
